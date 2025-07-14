@@ -7,6 +7,7 @@ import authRoutes from './routes/auth';
 import artistsRoutes from './routes/artists';
 import albumsRoutes from './routes/albums';
 import playlistsRoutes from './routes/playlists';
+import userRoutes from './routes/user';
 
 dotenv.config();
 
@@ -19,6 +20,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/artists', artistsRoutes);
 app.use('/api/albums', albumsRoutes);
 app.use('/api/playlists', playlistsRoutes);
+app.use('/api/user', userRoutes);
 
 app.get('/', (req, res) => {
   res.send('MagaluFy backend rodando!');
