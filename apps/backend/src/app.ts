@@ -5,6 +5,7 @@ import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
 import authRoutes from './routes/auth';
 import artistsRoutes from './routes/artists';
+import albumsRoutes from './routes/albums';
 
 dotenv.config();
 
@@ -15,6 +16,7 @@ app.use(express.json());
 app.use(cookieParser());
 app.use('/api/auth', authRoutes);
 app.use('/api/artists', artistsRoutes);
+app.use('/api/albums', albumsRoutes);
 
 app.get('/', (req, res) => {
   res.send('MagaluFy backend rodando!');
