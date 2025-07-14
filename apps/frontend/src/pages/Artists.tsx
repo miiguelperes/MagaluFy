@@ -1,5 +1,7 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
+import axios from 'axios';
+import { useAuth } from '../contexts/AuthContext';
 
 const Container = styled.div`
   max-width: 700px;
@@ -28,16 +30,12 @@ const ArtistItem = styled.li`
   margin-bottom: 16px;
 `;
 
-const Avatar = styled.div`
+const Avatar = styled.img`
   width: 48px;
   height: 48px;
   border-radius: 50%;
+  object-fit: cover;
   background: #333;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #fff;
-  font-size: 1.5rem;
 `;
 
 const Name = styled.span`
@@ -45,25 +43,86 @@ const Name = styled.span`
   font-size: 1.1rem;
 `;
 
-const mockArtists = [
-  { id: 1, name: 'Black Alien' },
-  { id: 2, name: 'Racionais MCs' },
-  { id: 3, name: 'Djonga' },
-  { id: 4, name: 'MC Zeca' },
-];
+const Pagination = styled.div`
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 24px;
+`;
+
+const Button = styled.button`
+  background: ${({ theme }) => theme.colors.primary};
+  color: #fff;
+  border: none;
+  border-radius: 24px;
+  padding: 8px 24px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  &:disabled {
+    background: #444;
+    cursor: not-allowed;
+  }
+`;
+
+interface Artist {
+  id: string;
+  name: string;
+  images: { url: string }[];
+}
+
+const LIMIT = 8;
 
 const Artists: React.FC = () => {
+  const { user, loading } = useAuth();
+  const [artists, setArtists] = useState<Artist[]>([]);
+  const [offset, setOffset] = useState(0);
+  const [total, setTotal] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const fetchArtists = async () => {
+    setIsLoading(true);
+    try {
+      const { data } = await axios.get(`/api/artists/top?limit=${LIMIT}&offset=${offset}`);
+      setArtists(data.items);
+      setTotal(data.total);
+    } catch {
+      setArtists([]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (user) fetchArtists();
+    // eslint-disable-next-line
+  }, [user, offset]);
+
+  if (loading || isLoading) return <Container>Carregando...</Container>;
+  if (!user) return <Container>Faça login para ver seus artistas.</Container>;
+
   return (
     <Container>
       <Title>Top Artistas</Title>
       <List>
-        {mockArtists.map((artist) => (
+        {artists.map((artist) => (
           <ArtistItem key={artist.id}>
-            <Avatar>🎤</Avatar>
+            <Avatar src={artist.images[0]?.url || ''} alt={artist.name} />
             <Name>{artist.name}</Name>
           </ArtistItem>
         ))}
       </List>
+      <Pagination>
+        <Button onClick={() => setOffset((o) => Math.max(0, o - LIMIT))} disabled={offset === 0}>
+          Anterior
+        </Button>
+        <Button
+          onClick={() => setOffset((o) => o + LIMIT)}
+          disabled={offset + LIMIT >= total}
+        >
+          Próxima
+        </Button>
+      </Pagination>
     </Container>
   );
 };
