@@ -24,10 +24,10 @@ a:hover {
 
 body {
   margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
+  padding: 0;
+  font-family: 'Inter', Arial, Helvetica, sans-serif;
+  background: #181818;
+  color: #fff;
 }
 
 h1 {
@@ -64,5 +64,42 @@ button:focus-visible {
   }
   button {
     background-color: #f9f9f9;
+  }
+}
+
+@media (max-width: 900px) {
+  main {
+    padding: 16px 8px !important;
+  }
+}
+
+@media (max-width: 600px) {
+  aside {
+    width: 100vw !important;
+    min-width: 0 !important;
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 100;
+    height: 56px !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    padding: 0 !important;
+  }
+  aside h1 {
+    font-size: 1.5rem !important;
+    margin: 0 16px 0 16px !important;
+  }
+  aside nav {
+    flex-direction: row !important;
+    gap: 0 !important;
+  }
+  aside nav a {
+    padding: 8px 12px !important;
+    font-size: 1rem !important;
+  }
+  main {
+    margin-top: 56px;
+    padding: 8px 4px !important;
   }
 }
