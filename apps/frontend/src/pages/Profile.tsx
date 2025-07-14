@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import { useAuth } from '../contexts/AuthContext';
 
 const Container = styled.div`
   display: flex;
@@ -9,21 +10,22 @@ const Container = styled.div`
   height: 100vh;
 `;
 
-const Avatar = styled.div`
+const Avatar = styled.img`
   width: 120px;
   height: 120px;
   border-radius: 50%;
   background: #222;
   margin-bottom: 24px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 3rem;
-  color: #fff;
+  object-fit: cover;
 `;
 
 const Name = styled.h2`
   color: #fff;
+  margin-bottom: 12px;
+`;
+
+const Email = styled.p`
+  color: #ccc;
   margin-bottom: 12px;
 `;
 
@@ -43,12 +45,17 @@ const Button = styled.button`
 `;
 
 const Profile: React.FC = () => {
-  // Aqui será feita a chamada para a API de perfil do usuário
+  const { user, loading, logout } = useAuth();
+
+  if (loading) return <Container>Carregando...</Container>;
+  if (!user) return <Container>Faça login para ver seu perfil.</Container>;
+
   return (
     <Container>
-      <Avatar>👤</Avatar>
-      <Name>Fulano dos Santos</Name>
-      <Button>Sair</Button>
+      <Avatar src={user.images[0]?.url || ''} alt={user.display_name} />
+      <Name>{user.display_name}</Name>
+      <Email>{user.email}</Email>
+      <Button onClick={logout}>Sair</Button>
     </Container>
   );
 };
