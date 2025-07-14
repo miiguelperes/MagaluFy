@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import { useAuth } from '../contexts/AuthContext';
 
 const Container = styled.div`
   display: flex;
@@ -36,14 +37,16 @@ const Button = styled.button`
 `;
 
 const Home: React.FC = () => {
-  const handleLogin = () => {
-    window.location.href = '/api/auth/login';
-  };
+  const { user, loading, login } = useAuth();
+
+  if (loading) return <Container>Carregando...</Container>;
+  if (user) return <Container>Bem-vindo, {user.display_name}!</Container>;
+
   return (
     <Container>
       <Logo>Spotify</Logo>
       <Text>Entre com sua conta Spotify e aproveite o melhor da música.</Text>
-      <Button onClick={handleLogin}>Entrar</Button>
+      <Button onClick={login}>Entrar</Button>
     </Container>
   );
 };
