@@ -6,6 +6,7 @@ import Home from './pages/Home';
 import Artists from './pages/Artists';
 import Playlists from './pages/Playlists';
 import Profile from './pages/Profile';
+import ArtistAlbums from './pages/ArtistAlbums';
 
 const GlobalStyle = createGlobalStyle`
   body {
@@ -40,6 +41,7 @@ function App() {
             <Route path="/artists/*" element={<Artists />} />
             <Route path="/playlists/*" element={<Playlists />} />
             <Route path="/profile" element={<Profile />} />
+            <Route path="/artists/:artistId/albums" element={<ArtistAlbums />} />
             <Route path="*" element={<Navigate to="/" />} />
           </Routes>
         </Main>

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
 import { useAuth } from '../contexts/AuthContext';
+import { Link } from 'react-router-dom';
 
 const Container = styled.div`
   max-width: 700px;
@@ -28,6 +29,11 @@ const ArtistItem = styled.li`
   border-radius: 12px;
   padding: 16px;
   margin-bottom: 16px;
+  cursor: pointer;
+  transition: background 0.2s;
+  &:hover {
+    background: #222;
+  }
 `;
 
 const Avatar = styled.img`
@@ -106,10 +112,12 @@ const Artists: React.FC = () => {
       <Title>Top Artistas</Title>
       <List>
         {artists.map((artist) => (
-          <ArtistItem key={artist.id}>
-            <Avatar src={artist.images[0]?.url || ''} alt={artist.name} />
-            <Name>{artist.name}</Name>
-          </ArtistItem>
+          <Link to={`/artists/${artist.id}/albums`} key={artist.id} style={{ textDecoration: 'none' }}>
+            <ArtistItem>
+              <Avatar src={artist.images[0]?.url || ''} alt={artist.name} />
+              <Name>{artist.name}</Name>
+            </ArtistItem>
+          </Link>
         ))}
       </List>
       <Pagination>
