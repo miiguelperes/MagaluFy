@@ -6,6 +6,7 @@ import cookieParser from 'cookie-parser';
 import authRoutes from './routes/auth';
 import artistsRoutes from './routes/artists';
 import albumsRoutes from './routes/albums';
+import playlistsRoutes from './routes/playlists';
 
 dotenv.config();
 
@@ -17,6 +18,7 @@ app.use(cookieParser());
 app.use('/api/auth', authRoutes);
 app.use('/api/artists', artistsRoutes);
 app.use('/api/albums', albumsRoutes);
+app.use('/api/playlists', playlistsRoutes);
 
 app.get('/', (req, res) => {
   res.send('MagaluFy backend rodando!');
