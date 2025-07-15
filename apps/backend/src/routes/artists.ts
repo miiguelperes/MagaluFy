@@ -12,18 +12,17 @@ async function trySpotifyRequest(req: Request, res: Response, fn: (access_token:
     if (err.response?.status === 401 && refresh_token) {
       // Tentar renovar o access token
       try {
-        const axios = require('axios');
-        const querystring = require('querystring');
         const CLIENT_ID = process.env.SPOTIFY_CLIENT_ID;
         const CLIENT_SECRET = process.env.SPOTIFY_CLIENT_SECRET;
+        const params = new URLSearchParams({
+          grant_type: 'refresh_token',
+          refresh_token,
+          client_id: CLIENT_ID || '',
+          client_secret: CLIENT_SECRET || '',
+        });
         const tokenRes = await axios.post(
           'https://accounts.spotify.com/api/token',
-          querystring.stringify({
-            grant_type: 'refresh_token',
-            refresh_token,
-            client_id: CLIENT_ID,
-            client_secret: CLIENT_SECRET,
-          }),
+          params.toString(),
           { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }
         );
         access_token = tokenRes.data.access_token;
@@ -45,16 +44,21 @@ async function trySpotifyRequest(req: Request, res: Response, fn: (access_token:
 }
 
 router.get('/top', async (req, res) => {
-  await trySpotifyRequest(req, res, async (access_token) => {
-    const { data } = await axios.get('https://api.spotify.com/v1/me/top/artists', {
-      headers: { Authorization: `Bearer ${access_token}` },
-      params: {
-        limit: req.query.limit || 10,
-        offset: req.query.offset || 0,
-      },
+  try {
+    await trySpotifyRequest(req, res, async (access_token) => {
+      const { data } = await axios.get('https://api.spotify.com/v1/me/top/artists', {
+        headers: { Authorization: `Bearer ${access_token}` },
+        params: {
+          limit: req.query.limit || 10,
+          offset: req.query.offset || 0,
+        },
+      });
+      res.json(data);
     });
-    res.json(data);
-  });
+  } catch (error) {
+    console.error('Erro ao buscar artistas top:', error);
+    res.status(500).json({ error: 'Erro interno do servidor' });
+  }
 });
 
 export default router; 

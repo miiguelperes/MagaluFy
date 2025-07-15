@@ -3,6 +3,13 @@ import axios from 'axios';
 
 const router = Router();
 
+// Função para validar e sanitizar o artistId
+function validateArtistId(artistId: string): boolean {
+  // Spotify artist IDs são alfanuméricos com 22 caracteres
+  const spotifyIdRegex = /^[a-zA-Z0-9]{22}$/;
+  return spotifyIdRegex.test(artistId);
+}
+
 async function trySpotifyRequest(req: Request, res: Response, fn: (access_token: string) => Promise<any>) {
   let access_token = req.cookies.access_token;
   let refresh_token = req.cookies.refresh_token;
@@ -42,18 +49,29 @@ async function trySpotifyRequest(req: Request, res: Response, fn: (access_token:
 }
 
 router.get('/:artistId/albums', async (req, res) => {
-  await trySpotifyRequest(req, res, async (access_token) => {
+  try {
     const { artistId } = req.params;
-    const { data } = await axios.get(`https://api.spotify.com/v1/artists/${artistId}/albums`, {
-      headers: { Authorization: `Bearer ${access_token}` },
-      params: {
-        limit: req.query.limit || 10,
-        offset: req.query.offset || 0,
-        include_groups: req.query.include_groups || 'album,single',
-      },
+    
+    // Validar o artistId antes de usar na URL
+    if (!validateArtistId(artistId)) {
+      return res.status(400).json({ error: 'ID do artista inválido' });
+    }
+
+    await trySpotifyRequest(req, res, async (access_token) => {
+      const { data } = await axios.get(`https://api.spotify.com/v1/artists/${artistId}/albums`, {
+        headers: { Authorization: `Bearer ${access_token}` },
+        params: {
+          limit: req.query.limit || 10,
+          offset: req.query.offset || 0,
+          include_groups: req.query.include_groups || 'album,single',
+        },
+      });
+      res.json(data);
     });
-    res.json(data);
-  });
+  } catch (error) {
+    console.error('Erro ao buscar álbuns do artista:', error);
+    res.status(500).json({ error: 'Erro interno do servidor' });
+  }
 });
 
 export default router; 

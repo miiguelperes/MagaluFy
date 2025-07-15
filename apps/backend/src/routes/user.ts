@@ -11,18 +11,17 @@ async function trySpotifyRequest(req: Request, res: Response, fn: (access_token:
   } catch (err: any) {
     if (err.response?.status === 401 && refresh_token) {
       try {
-        const axios = require('axios');
-        const querystring = require('querystring');
         const CLIENT_ID = process.env.SPOTIFY_CLIENT_ID;
         const CLIENT_SECRET = process.env.SPOTIFY_CLIENT_SECRET;
+        const params = new URLSearchParams({
+          grant_type: 'refresh_token',
+          refresh_token,
+          client_id: CLIENT_ID || '',
+          client_secret: CLIENT_SECRET || '',
+        });
         const tokenRes = await axios.post(
           'https://accounts.spotify.com/api/token',
-          querystring.stringify({
-            grant_type: 'refresh_token',
-            refresh_token,
-            client_id: CLIENT_ID,
-            client_secret: CLIENT_SECRET,
-          }),
+          params.toString(),
           { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }
         );
         access_token = tokenRes.data.access_token;
@@ -43,12 +42,17 @@ async function trySpotifyRequest(req: Request, res: Response, fn: (access_token:
 }
 
 router.get('/me', async (req, res) => {
-  await trySpotifyRequest(req, res, async (access_token) => {
-    const { data } = await axios.get('https://api.spotify.com/v1/me', {
-      headers: { Authorization: `Bearer ${access_token}` },
+  try {
+    await trySpotifyRequest(req, res, async (access_token) => {
+      const { data } = await axios.get('https://api.spotify.com/v1/me', {
+        headers: { Authorization: `Bearer ${access_token}` },
+      });
+      res.json(data);
     });
-    res.json(data);
-  });
+  } catch (error) {
+    console.error('Erro ao buscar dados do usuário:', error);
+    res.status(500).json({ error: 'Erro interno do servidor' });
+  }
 });
 
 export default router; 
