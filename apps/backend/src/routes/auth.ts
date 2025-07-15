@@ -2,13 +2,19 @@ import { Router } from 'express';
 import axios from 'axios';
 import querystring from 'querystring';
 
+
+console.log('SPOTIFY_CLIENT_ID:', process.env.SPOTIFY_CLIENT_ID);
+
 const router = Router();
 
 const CLIENT_ID = process.env.SPOTIFY_CLIENT_ID!;
 const CLIENT_SECRET = process.env.SPOTIFY_CLIENT_SECRET!;
 const REDIRECT_URI = process.env.SPOTIFY_REDIRECT_URI!;
 const FRONTEND_URL = process.env.FRONTEND_URL!;
-
+console.log('CLIENT_ID:', CLIENT_ID);
+console.log('CLIENT_SECRET:', CLIENT_SECRET);
+console.log('REDIRECT_URI:', REDIRECT_URI);
+console.log('FRONTEND_URL:', FRONTEND_URL);
 const SCOPES = [
   'user-read-private',
   'user-read-email',
@@ -45,8 +51,20 @@ router.get('/callback', async (req, res) => {
       { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }
     );
     const { access_token, refresh_token, expires_in } = tokenRes.data;
-    res.cookie('access_token', access_token, { httpOnly: true, maxAge: expires_in * 1000 });
-    res.cookie('refresh_token', refresh_token, { httpOnly: true, maxAge: 30 * 24 * 60 * 60 * 1000 });
+    res.cookie('access_token', access_token, {
+      httpOnly: true,
+      maxAge: expires_in * 1000,
+      sameSite: 'lax',
+      secure: false,
+      path: '/',
+    });
+    res.cookie('refresh_token', refresh_token, {
+      httpOnly: true,
+      maxAge: 30 * 24 * 60 * 60 * 1000,
+      sameSite: 'lax',
+      secure: false,
+      path: '/',
+    });
     res.redirect(FRONTEND_URL);
   } catch (err) {
     res.status(500).send('Erro ao autenticar com o Spotify');

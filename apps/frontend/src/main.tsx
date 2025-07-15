@@ -12,7 +12,7 @@ const theme = {
     background: '#181818',
     primary: '#1db954',
     text: '#fff',
-    sidebar: '#000',
+    sidebar: '#121212', // contraste sutil com o background
     card: '#222',
   },
 };

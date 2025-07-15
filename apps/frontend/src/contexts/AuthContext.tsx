@@ -1,6 +1,9 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import axios from 'axios';
 
+axios.defaults.baseURL = 'http://127.0.0.1:4000';
+axios.defaults.withCredentials = true;
+
 interface User {
   id: string;
   display_name: string;
@@ -44,11 +47,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, []);
 
   const login = () => {
-    window.location.href = '/api/auth/login';
+    window.location.href = 'http://127.0.0.1:4000/api/auth/login';
   };
 
   const logout = () => {
-    window.location.href = '/api/auth/logout';
+    window.location.href = 'http://127.0.0.1:4000/api/auth/logout';
     setUser(null);
   };
 

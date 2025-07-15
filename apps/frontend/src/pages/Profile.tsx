@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { useAuth } from '../contexts/AuthContext';
+import Loader from '../components/Loader';
 
 const Container = styled.div`
   display: flex;
@@ -17,6 +18,21 @@ const Avatar = styled.img`
   background: #222;
   margin-bottom: 24px;
   object-fit: cover;
+`;
+
+const AvatarFallback = styled.div`
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: #222;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3.2rem;
+  color: #b3b3b3;
+  font-weight: 700;
+  text-transform: uppercase;
+  margin-bottom: 24px;
 `;
 
 const Name = styled.h2`
@@ -47,14 +63,19 @@ const Button = styled.button`
 const Profile: React.FC = () => {
   const { user, loading, logout } = useAuth();
 
-  if (loading) return <Container>Carregando...</Container>;
+  if (loading) return <Loader />;
   if (!user) return <Container>Faça login para ver seu perfil.</Container>;
 
   return (
     <Container>
-      <Avatar src={user.images[0]?.url || ''} alt={user.display_name} />
+      {user.images?.[0]?.url ? (
+        <Avatar src={user.images[0].url} alt={user.display_name} />
+      ) : (
+        <AvatarFallback>
+          {user.display_name?.[0] || '?'}
+        </AvatarFallback>
+      )}
       <Name>{user.display_name}</Name>
-      <Email>{user.email}</Email>
       <Button onClick={logout}>Sair</Button>
     </Container>
   );

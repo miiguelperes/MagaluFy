@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "commonjs",
+    "jsx": "react-jsx",
+    "esModuleInterop": true,
+    "moduleResolution": "node",
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "types": ["jest", "@testing-library/jest-dom"]
+  },
+  "include": ["src", "jest.setup.ts"]
+} 
