@@ -1,3 +1,4 @@
+import './polyfills';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
@@ -6,6 +7,10 @@ import App from './App';
 import './index.css';
 import { AuthProvider } from './contexts/AuthContext';
 import { register as registerServiceWorker } from './registerServiceWorker';
+
+if (typeof global === 'undefined') {
+  window.global = window;
+}
 
 const theme = {
   colors: {

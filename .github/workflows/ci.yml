@@ -1,0 +1,43 @@
+name: CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Instalar dependências raiz
+        run: npm install
+
+      - name: Instalar dependências frontend
+        run: cd apps/frontend && npm install
+
+      - name: Instalar dependências backend
+        run: cd apps/backend && npm install
+
+      - name: Rodar testes unitários e integração
+        run: npm test
+
+      - name: Rodar backend
+        run: cd apps/backend && npm run dev &
+
+      - name: Rodar frontend em modo E2E
+        run: cd apps/frontend && npm run dev:e2e -- --host=127.0.0.1 &
+
+      - name: Esperar frontend subir
+        run: npx wait-on http://127.0.0.1:5173
+
+      - name: Rodar testes E2E (Cypress)
+        run: npx cypress run --e2e --browser chrome 

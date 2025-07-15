@@ -31,6 +31,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
+  // Mock E2E: se variável de ambiente estiver ativa, sobrescreve user e loading
+  const isE2E = import.meta.env.VITE_E2E;
+  const mockUser: User = {
+    id: 'e2e-user',
+    display_name: 'Usuário E2E',
+    email: 'e2e@magalufy.com',
+    images: [{ url: '' }],
+  };
+
   const fetchUser = async () => {
     try {
       const { data } = await axios.get('/api/user/me');
@@ -43,20 +52,26 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   useEffect(() => {
-    fetchUser();
+    if (!isE2E) fetchUser();
+    else {
+      setUser(mockUser);
+      setLoading(false);
+    }
   }, []);
 
   const login = () => {
-    window.location.href = 'http://127.0.0.1:4000/api/auth/login';
+    if (!isE2E) window.location.href = 'http://127.0.0.1:4000/api/auth/login';
   };
 
   const logout = () => {
-    window.location.href = 'http://127.0.0.1:4000/api/auth/logout';
-    setUser(null);
+    if (!isE2E) {
+      window.location.href = 'http://127.0.0.1:4000/api/auth/logout';
+      setUser(null);
+    }
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, logout }}>
+    <AuthContext.Provider value={{ user: isE2E ? mockUser : user, loading: isE2E ? false : loading, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
