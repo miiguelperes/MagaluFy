@@ -1,57 +1,19 @@
-import { Router, Request, Response } from 'express';
+import { Router } from 'express';
 import axios from 'axios';
+import { spotifyAuthMiddleware, SpotifyRequest } from '../middleware/spotifyAuth';
 
 const router = Router();
 
-async function trySpotifyRequest(req: Request, res: Response, fn: (access_token: string) => Promise<any>) {
-  let access_token = req.cookies.access_token;
-  let refresh_token = req.cookies.refresh_token;
-  
+router.get('/top', spotifyAuthMiddleware, async (req: SpotifyRequest, res) => {
   try {
-    return await fn(access_token);
-  } catch (err: any) {
-    if (err.response?.status === 401 && refresh_token) {
-      // Tentar renovar o access token
-      const CLIENT_ID = process.env.SPOTIFY_CLIENT_ID;
-      const CLIENT_SECRET = process.env.SPOTIFY_CLIENT_SECRET;
-      const params = new URLSearchParams({
-        grant_type: 'refresh_token',
-        refresh_token,
-        client_id: CLIENT_ID || '',
-        client_secret: CLIENT_SECRET || '',
-      });
-      const tokenRes = await axios.post(
-        'https://accounts.spotify.com/api/token',
-        params.toString(),
-        { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }
-      );
-      access_token = tokenRes.data.access_token;
-      res.cookie('access_token', access_token, {
-        httpOnly: true,
-        maxAge: tokenRes.data.expires_in * 1000,
-        sameSite: 'lax',
-        secure: false,
-        path: '/',
-      });
-      // Tentar novamente a requisição original
-      return await fn(access_token);
-    }
-    throw err;
-  }
-}
-
-router.get('/top', async (req, res) => {
-  try {
-    await trySpotifyRequest(req, res, async (access_token) => {
-      const { data } = await axios.get('https://api.spotify.com/v1/me/top/artists', {
-        headers: { Authorization: `Bearer ${access_token}` },
-        params: {
-          limit: req.query.limit || 10,
-          offset: req.query.offset || 0,
-        },
-      });
-      res.json(data);
+    const { data } = await axios.get('https://api.spotify.com/v1/me/top/artists', {
+      headers: { Authorization: `Bearer ${req.spotifyToken}` },
+      params: {
+        limit: req.query.limit || 10,
+        offset: req.query.offset || 0,
+      },
     });
+    res.json(data);
   } catch (error) {
     console.error('Erro ao buscar artistas top:', error);
     res.status(500).json({ error: 'Erro interno do servidor' });
