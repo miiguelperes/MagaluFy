@@ -41,9 +41,4 @@ export async function spotifyPost<T = any>(
     headers: createSpotifyHeaders(req.spotifyToken!),
   });
   return data;
-}
-
-export function handleSpotifyError(error: any, operation: string) {
-  console.error(`Erro ao ${operation}:`, error);
-  throw new Error(`Erro interno do servidor`);
 } 
