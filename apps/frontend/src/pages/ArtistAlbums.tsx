@@ -159,7 +159,7 @@ const ArtistAlbums: React.FC = () => {
   const endRef = React.useRef<HTMLDivElement | null>(null);
   const observer = React.useRef<IntersectionObserver | null>(null);
   const location = useLocation();
-  const [artistName, setArtistName] = useState(location.state?.artistName || '');
+  const artistName = location.state?.artistName || '';
   const { user } = useAuth();
 
   const fetchAlbums = async (nextOffset = 0, append = false) => {

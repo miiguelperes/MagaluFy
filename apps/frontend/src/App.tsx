@@ -67,9 +67,7 @@ const UserAvatarFallback = styled.div`
 `;
 
 function App() {
-  const { user } = useAuth();
   const location = useLocation();
-  const isArtistAlbums = !!matchPath('/artists/:artistId/albums', location.pathname);
   return (
     <>
       <GlobalStyle />

@@ -117,13 +117,11 @@ const Artists: React.FC = () => {
 
   const fetchArtists = async (nextOffset = 0, append = false) => {
     const cacheKey = `artists-page-${nextOffset}`;
-    let fromCache = false;
     let data;
     // Tenta buscar do cache primeiro
     try {
       if (!navigator.onLine) {
         data = await get(cacheKey);
-        fromCache = true;
       }
     } catch {}
     if (!data) {
@@ -135,7 +133,6 @@ const Artists: React.FC = () => {
       } catch {
         // Se falhar online, tenta cache como fallback
         data = await get(cacheKey);
-        fromCache = true;
       }
     }
     if (data) {
