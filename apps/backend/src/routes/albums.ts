@@ -1,6 +1,6 @@
 import { Router } from 'express';
-import axios from 'axios';
 import { spotifyAuthMiddleware, SpotifyRequest } from '../middleware/spotifyAuth';
+import { spotifyGet, handleSpotifyError } from '../utils/spotifyApi';
 
 const router = Router();
 
@@ -20,17 +20,14 @@ router.get('/:artistId/albums', spotifyAuthMiddleware, async (req: SpotifyReques
       return res.status(400).json({ error: 'ID do artista inválido' });
     }
 
-    const { data } = await axios.get(`https://api.spotify.com/v1/artists/${artistId}/albums`, {
-      headers: { Authorization: `Bearer ${req.spotifyToken}` },
-      params: {
-        limit: req.query.limit || 10,
-        offset: req.query.offset || 0,
-        include_groups: req.query.include_groups || 'album,single',
-      },
+    const data = await spotifyGet(`https://api.spotify.com/v1/artists/${artistId}/albums`, req, {
+      limit: Number(req.query.limit) || 10,
+      offset: Number(req.query.offset) || 0,
+      include_groups: req.query.include_groups as string || 'album,single',
     });
     res.json(data);
   } catch (error) {
-    console.error('Erro ao buscar álbuns do artista:', error);
+    handleSpotifyError(error, 'buscar álbuns do artista');
     res.status(500).json({ error: 'Erro interno do servidor' });
   }
 });

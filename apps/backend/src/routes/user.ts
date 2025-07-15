@@ -1,17 +1,15 @@
 import { Router } from 'express';
-import axios from 'axios';
 import { spotifyAuthMiddleware, SpotifyRequest } from '../middleware/spotifyAuth';
+import { spotifyGet, handleSpotifyError } from '../utils/spotifyApi';
 
 const router = Router();
 
 router.get('/me', spotifyAuthMiddleware, async (req: SpotifyRequest, res) => {
   try {
-    const { data } = await axios.get('https://api.spotify.com/v1/me', {
-      headers: { Authorization: `Bearer ${req.spotifyToken}` },
-    });
+    const data = await spotifyGet('https://api.spotify.com/v1/me', req);
     res.json(data);
   } catch (error) {
-    console.error('Erro ao buscar dados do usuário:', error);
+    handleSpotifyError(error, 'buscar dados do usuário');
     res.status(500).json({ error: 'Erro interno do servidor' });
   }
 });
