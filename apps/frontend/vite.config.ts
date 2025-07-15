@@ -1,9 +1,14 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
+import { NodeGlobalsPolyfillPlugin } from '@esbuild-plugins/node-globals-polyfill';
 
 // https://vite.dev/config/
 export default defineConfig({
+  server: {
+    host: '127.0.0.1',
+    port: 5173,
+  },
   plugins: [
     react(),
     VitePWA({
@@ -45,4 +50,17 @@ export default defineConfig({
       },
     })
   ],
+  optimizeDeps: {
+    esbuildOptions: {
+      plugins: [
+        NodeGlobalsPolyfillPlugin({
+          process: true,
+          buffer: true,
+        }),
+      ],
+    },
+  },
+  define: {
+    global: 'window',
+  },
 })
