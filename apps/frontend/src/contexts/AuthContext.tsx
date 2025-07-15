@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useEffect, useState, useMemo } from 'react';
 import axios from 'axios';
 
 axios.defaults.baseURL = 'http://127.0.0.1:4000';
@@ -70,8 +70,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
+  const contextValue = useMemo(() => ({
+    user: isE2E ? mockUser : user,
+    loading: isE2E ? false : loading,
+    login,
+    logout,
+  }), [isE2E, user, loading, login, logout]);
+
   return (
-    <AuthContext.Provider value={{ user: isE2E ? mockUser : user, loading: isE2E ? false : loading, login, logout }}>
+    <AuthContext.Provider value={contextValue}>
       {children}
     </AuthContext.Provider>
   );

@@ -40,6 +40,18 @@ describe('ArtistAlbums', () => {
       value: true,
       configurable: true,
     });
+
+    // Mock IntersectionObserver
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    global.IntersectionObserver = class {
+      constructor() {}
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      observe() {}
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      disconnect() {}
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      unobserve() {}
+    } as any;
   });
 
   it('deve renderizar o header', async () => {

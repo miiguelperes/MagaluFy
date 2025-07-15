@@ -1,4 +1,4 @@
-import { Router } from 'express';
+import { Router, Response } from 'express';
 import { spotifyAuthMiddleware, SpotifyRequest } from '../middleware/spotifyAuth';
 import { spotifyGet, spotifyPost } from '../utils/spotifyApi';
 import { asyncHandler } from '../middleware/errorHandler';
@@ -6,7 +6,7 @@ import { asyncHandler } from '../middleware/errorHandler';
 const router = Router();
 
 // Listar playlists do usuário
-router.get('/', spotifyAuthMiddleware, asyncHandler(async (req: SpotifyRequest, res) => {
+router.get('/', spotifyAuthMiddleware, asyncHandler(async (req: SpotifyRequest, res: Response) => {
   const data = await spotifyGet('https://api.spotify.com/v1/me/playlists', req, {
     limit: Number(req.query.limit) || 10,
     offset: Number(req.query.offset) || 0,
@@ -15,7 +15,7 @@ router.get('/', spotifyAuthMiddleware, asyncHandler(async (req: SpotifyRequest, 
 }, 'buscar playlists'));
 
 // Criar nova playlist
-router.post('/', spotifyAuthMiddleware, asyncHandler(async (req: SpotifyRequest, res) => {
+router.post('/', spotifyAuthMiddleware, asyncHandler(async (req: SpotifyRequest, res: Response) => {
   const { name, description = '', isPublic = true } = req.body;
   
   if (!name || typeof name !== 'string') {

@@ -1,4 +1,4 @@
-import { Router } from 'express';
+import { Router, Response } from 'express';
 import { spotifyAuthMiddleware, SpotifyRequest } from '../middleware/spotifyAuth';
 import { spotifyGet } from '../utils/spotifyApi';
 import { asyncHandler } from '../middleware/errorHandler';
@@ -12,7 +12,7 @@ function validateArtistId(artistId: string): boolean {
   return spotifyIdRegex.test(artistId);
 }
 
-router.get('/:artistId/albums', spotifyAuthMiddleware, asyncHandler(async (req: SpotifyRequest, res) => {
+router.get('/:artistId/albums', spotifyAuthMiddleware, asyncHandler(async (req: SpotifyRequest, res: Response) => {
   const { artistId } = req.params;
   
   // Validar o artistId antes de usar na URL

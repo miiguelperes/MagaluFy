@@ -4,7 +4,6 @@ import { render, screen, waitFor } from '@testing-library/react';
 import Artists from '../pages/Artists';
 import { ThemeProvider } from 'styled-components';
 import { BrowserRouter } from 'react-router-dom';
-import { act } from 'react';
 
 const theme = {
   colors: {
@@ -43,10 +42,14 @@ jest.mock('idb-keyval', () => ({
 
 // Mock IntersectionObserver
 beforeAll(() => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   global.IntersectionObserver = class {
     constructor() {}
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
     observe() {}
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
     disconnect() {}
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
     unobserve() {}
   } as any;
 });

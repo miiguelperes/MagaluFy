@@ -5,7 +5,13 @@ import { AuthProvider, useAuth } from '../contexts/AuthContext';
 
 const TestComponent = () => {
   const { user, loading } = useAuth();
-  return <div>{loading ? 'Carregando...' : user ? user.display_name : 'Deslogado'}</div>;
+  let content;
+  if (loading) {
+    content = 'Carregando...';
+  } else {
+    content = user ? user.display_name : 'Deslogado';
+  }
+  return <div>{content}</div>;
 };
 
 describe('AuthContext', () => {

@@ -6,8 +6,11 @@ if (typeof global.setImmediate === 'undefined') {
 if (typeof global.IntersectionObserver === 'undefined') {
   global.IntersectionObserver = class {
     constructor() {}
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
     observe() {}
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
     disconnect() {}
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
     unobserve() {}
   };
 } 

@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 
 // Exemplo de middleware de autenticação
 function authMiddleware(req: Request, res: Response, next: NextFunction) {
-  if (!req.cookies || !req.cookies.access_token) {
+  if (!req.cookies?.access_token) {
     return res.status(401).json({ error: 'Não autenticado' });
   }
   next();
