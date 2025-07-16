@@ -27,20 +27,18 @@ const AuthContext = createContext<AuthContextProps>({
 
 export const useAuth = () => useContext(AuthContext);
 
-// Função utilitária para acessar import.meta.env.VITE_E2E, permitindo sobrescrever via window.__E2E__ em testes
-export async function getIsE2E() {
-  // Em ambiente de teste (Jest), nunca acessar import.meta.env nem importar envUtils
+export function getIsE2E() {
+  // Em ambiente de teste (Jest), nunca acessar import.meta.env
   if (typeof process !== 'undefined' && process.env && process.env.JEST_WORKER_ID !== undefined) {
     if (typeof window !== 'undefined' && typeof (window as any).__E2E__ !== 'undefined') return (window as any).__E2E__;
     return false;
   }
-  if (typeof window !== 'undefined' && typeof (window as any).__E2E__ !== 'undefined') return (window as any).__E2E__;
-  // No browser, importa envUtils dinamicamente
-  if (typeof window !== 'undefined') {
-    const mod = await import('../utils/envUtils');
-    return mod.isE2E;
+  // No browser, prioriza window.__E2E__, senão usa import.meta.env
+  if (typeof window !== 'undefined' && typeof (window as any).__E2E__ !== 'undefined') {
+    return (window as any).__E2E__;
   }
-  return false;
+  // @ts-expect-error Vite: import.meta.env não existe fora do Vite, mas é seguro aqui
+  return import.meta.env && import.meta.env.VITE_E2E;
 }
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
