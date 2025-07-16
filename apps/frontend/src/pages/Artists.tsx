@@ -74,29 +74,6 @@ const Name = styled.span`
   font-size: 1.15rem;
   font-weight: 500;
 `;
-
-const Pagination = styled.div`
-  display: flex;
-  justify-content: center;
-  gap: 16px;
-  margin-top: 24px;
-`;
-
-const Button = styled.button`
-  background: ${({ theme }) => theme.colors.primary};
-  color: #fff;
-  border: none;
-  border-radius: 24px;
-  padding: 8px 24px;
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  &:disabled {
-    background: #444;
-    cursor: not-allowed;
-  }
-`;
-
 interface Artist {
   id: string;
   name: string;
@@ -126,7 +103,9 @@ const Artists: React.FC = () => {
       if (!navigator.onLine) {
         data = await get(cacheKey);
       }
-    } catch {}
+    } catch {
+      console.error('Error getting cache', cacheKey);
+    }
     if (!data) {
       try {
         const res = await axios.get(`/api/artists/top?limit=${LIMIT}&offset=${nextOffset}`);

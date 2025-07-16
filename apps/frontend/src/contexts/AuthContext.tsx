@@ -1,3 +1,6 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable react-refresh/only-export-components */
 import React, { createContext, useContext, useEffect, useState, useMemo } from 'react';
 import axios from 'axios';
 
@@ -37,8 +40,7 @@ export function getIsE2E() {
   if (typeof window !== 'undefined' && typeof (window as any).__E2E__ !== 'undefined') {
     return (window as any).__E2E__;
   }
-  // @ts-expect-error Vite: import.meta.env não existe fora do Vite, mas é seguro aqui
-  return import.meta.env && import.meta.env.VITE_E2E;
+  return import.meta.env?.VITE_E2E;
 }
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -71,7 +73,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setUser(mockUser);
       setLoading(false);
     }
-  }, []);
+  }, [isE2E, mockUser]);
 
   const login = () => {
     if (!isE2E) window.location.href = 'http://127.0.0.1:4000/api/auth/login';

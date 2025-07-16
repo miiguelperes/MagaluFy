@@ -29,15 +29,6 @@ const Back = styled(Link)`
   height: 30px;
 `;
 
-const Title = styled.h2`
-  color: #fff;
-  font-size: 2rem;
-  font-weight: 700;
-  margin-bottom: 32px;
-  text-align: left;
-  font-family: 'Inter', Arial, Helvetica, sans-serif;
-`;
-
 const List = styled.ul`
   list-style: none;
   padding: 0;
@@ -170,7 +161,9 @@ const ArtistAlbums: React.FC = () => {
       if (!navigator.onLine) {
         data = await get(cacheKey);
       }
-    } catch {}
+    } catch {
+      console.error('Error getting cache', cacheKey);
+    }
     if (!data) {
       try {
         const res = await axios.get(`/api/albums/${artistId}/albums?limit=${LIMIT}&offset=${nextOffset}`);

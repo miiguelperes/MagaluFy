@@ -17,15 +17,29 @@ if (typeof global.TextDecoder === 'undefined') {
 
 // Mock IntersectionObserver
 if (typeof global.IntersectionObserver === 'undefined') {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   
   global.IntersectionObserver = class {
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
-    constructor() {}
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
+     
+    constructor() {} // NOSONAR
+     
     observe() {}
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
+     
     disconnect() {}
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
+     
     unobserve() {}
-  } as any;
+  } as never;
+}
+
+if (typeof window !== 'undefined' && !window.IntersectionObserver) {
+  class IntersectionObserver {
+    readonly root = null;
+    readonly rootMargin = '';
+    readonly thresholds = [];
+    constructor() {} // NOSONAR
+    observe() { return null; }
+    disconnect() { return null; }
+    unobserve() { return null; }
+    takeRecords() { return []; }
+  }
+  window.IntersectionObserver = IntersectionObserver as never;
 } 

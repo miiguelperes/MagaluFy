@@ -5,7 +5,7 @@ global.TextDecoder = TextDecoder;
 
 if (typeof window !== 'undefined' && !window.IntersectionObserver) {
   class IntersectionObserver {
-    constructor() {}
+    constructor() {} // NOSONAR
     observe() { return null; }
     disconnect() { return null; }
     unobserve() { return null; }

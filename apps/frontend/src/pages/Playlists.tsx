@@ -196,20 +196,6 @@ const ModalButton = styled.button`
   }
 `;
 
-const CancelButton = styled.button`
-  background: none;
-  color: #b3b3b3;
-  border: none;
-  font-size: 1rem;
-  font-weight: 500;
-  margin-top: 0;
-  cursor: pointer;
-  &:hover {
-    text-decoration: underline;
-    color: #fff;
-  }
-`;
-
 const CloseButton = styled.button`
   position: absolute;
   top: 24px;
@@ -262,7 +248,9 @@ const Playlists: React.FC = () => {
       if (!navigator.onLine) {
         data = await get(cacheKey);
       }
-    } catch {}
+    } catch {
+      console.error('Error getting cache', cacheKey);
+    }
     if (!data) {
       try {
         const res = await axios.get(`/api/playlists?limit=${LIMIT}&offset=${nextOffset}`);
