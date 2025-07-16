@@ -50,6 +50,8 @@ cd apps/frontend && npm run dev:e2e
 
 # Em outro terminal, rode o Cypress
 npx cypress open # ou npx cypress run
+#ou
+npx cypress open --e2e --browser chrome
 ```
 
 ## CI/CD (GitHub Actions)
@@ -80,7 +82,7 @@ npx cypress open # ou npx cypress run
 - [x] Testes E2E (bônus)
 - [x] CI/CD (bônus)
 - [x] Responsividade
-- [ ] SonarQube (bônus)
+- [x] SonarQube (bônus)
 - [x] PWA
 
 ## Observações
