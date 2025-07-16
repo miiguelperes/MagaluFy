@@ -196,6 +196,10 @@ const ArtistAlbums: React.FC = () => {
     // eslint-disable-next-line
   }, [artistId]);
 
+  React.useEffect(() => {
+    document.title = `MagaluFy | Álbuns de ${artistName || 'Artista'}`;
+  }, [artistName]);
+
   const loadMore = React.useCallback(() => {
     if (albums.length < total && !isFetchingMore && !isLoading) {
       fetchAlbums(offset + LIMIT, true);
@@ -231,11 +235,15 @@ const ArtistAlbums: React.FC = () => {
         </HeaderLeft>
         {user && (
           user.images?.[0]?.url ? (
-            <UserAvatar src={user.images[0].url} alt={user.display_name} />
+            <Link to="/profile">
+              <UserAvatar src={user.images[0].url} alt={user.display_name} />
+            </Link>
           ) : (
-            <UserAvatarFallback>
-              {user.display_name?.[0] || '?'}
-            </UserAvatarFallback>
+            <Link to="/profile">
+              <UserAvatarFallback>
+                {user.display_name?.[0] || '?'}
+              </UserAvatarFallback>
+            </Link>
           )
         )}
       </Header>

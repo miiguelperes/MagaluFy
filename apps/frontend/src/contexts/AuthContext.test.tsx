@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
-import { AuthProvider, useAuth } from './AuthContext';
+import { AuthProvider, useAuth, getIsE2E } from './AuthContext';
 
 const TestComponent = () => {
   const { user, loading } = useAuth();
@@ -13,6 +13,9 @@ const TestComponent = () => {
 };
 
 describe('AuthContext', () => {
+  beforeAll(() => {
+    jest.spyOn(require('./AuthContext'), 'getIsE2E').mockReturnValue(false);
+  });
   it('should render loading initially', () => {
     render(
       <AuthProvider>

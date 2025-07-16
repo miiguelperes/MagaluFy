@@ -239,6 +239,9 @@ interface Playlist {
 const LIMIT = 8;
 
 const Playlists: React.FC = () => {
+  React.useEffect(() => {
+    document.title = "MagaluFy | Playlists";
+  }, []);
   const { user, loading } = useAuth();
   const [playlists, setPlaylists] = useState<Playlist[]>([]);
   const [offset, setOffset] = useState(0);

@@ -1,69 +1,54 @@
-# React + TypeScript + Vite
+# MagaluFy
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+UI inspirada no Spotify, desenvolvida em React + Vite + TypeScript.
 
-Currently, two official plugins are available:
+## Autor
+- **Miguel Peres**
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Descrição
+Aplicação frontend que consome a API do Spotify, com autenticação, playlists, artistas, álbuns e suporte a PWA.
 
-## Expanding the ESLint configuration
+## Tecnologias
+- React
+- Vite
+- TypeScript
+- Styled-components
+- React Router
+- PWA (manifest, service worker)
+- Testes com Jest e Testing Library
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## Instalação
+```bash
+npm install
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## Rodando em desenvolvimento
+```bash
+npm run dev
 ```
+Acesse: [http://localhost:5173](http://localhost:5173)
+
+## Build para produção
+```bash
+npm run build
+```
+
+## Testes
+```bash
+npm test
+```
+
+## PWA
+- O app pode ser instalado como PWA em navegadores compatíveis.
+- O botão "Instalar PWA" aparece no menu lateral.
+- Caso não esteja elegível, o motivo será exibido ao clicar.
+
+## Estrutura
+- `src/pages` — Páginas principais (Home, Artistas, Playlists, Perfil, Álbuns)
+- `src/components` — Componentes reutilizáveis
+- `src/assets` — Ícones e logo
+- `public/manifest.json` — Manifesto PWA
+
+---
+
+Desenvolvido por Miguel Peres.

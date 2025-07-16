@@ -40,18 +40,6 @@ describe('ArtistAlbums', () => {
       value: true,
       configurable: true,
     });
-
-    // Mock IntersectionObserver
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    global.IntersectionObserver = class {
-      constructor() {}
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
-      observe() {}
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
-      disconnect() {}
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
-      unobserve() {}
-    } as any;
   });
 
   it('deve renderizar o header', async () => {
@@ -64,6 +52,8 @@ describe('ArtistAlbums', () => {
     );
     expect(await screen.findByText('Artista Teste')).toBeInTheDocument();
     expect(await screen.findByText('U')).toBeInTheDocument();
-    expect(screen.getByRole('link')).toHaveAttribute('href', '/artists');
+    const links = screen.getAllByRole('link');
+    expect(links.some(link => link.getAttribute('href') === '/artists')).toBe(true);
+    expect(links.some(link => link.getAttribute('href') === '/profile')).toBe(true);
   });
 }); 

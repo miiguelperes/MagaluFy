@@ -27,12 +27,28 @@ const AuthContext = createContext<AuthContextProps>({
 
 export const useAuth = () => useContext(AuthContext);
 
+// Função utilitária para acessar import.meta.env.VITE_E2E, permitindo sobrescrever via window.__E2E__ em testes
+export async function getIsE2E() {
+  // Em ambiente de teste (Jest), nunca acessar import.meta.env nem importar envUtils
+  if (typeof process !== 'undefined' && process.env && process.env.JEST_WORKER_ID !== undefined) {
+    if (typeof window !== 'undefined' && typeof (window as any).__E2E__ !== 'undefined') return (window as any).__E2E__;
+    return false;
+  }
+  if (typeof window !== 'undefined' && typeof (window as any).__E2E__ !== 'undefined') return (window as any).__E2E__;
+  // No browser, importa envUtils dinamicamente
+  if (typeof window !== 'undefined') {
+    const mod = await import('../utils/envUtils');
+    return mod.isE2E;
+  }
+  return false;
+}
+
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
   // Mock E2E: se variável de ambiente estiver ativa, sobrescreve user e loading
-  const isE2E = import.meta.env.VITE_E2E;
+  const isE2E = getIsE2E();
   const mockUser: User = {
     id: 'e2e-user',
     display_name: 'Usuário E2E',

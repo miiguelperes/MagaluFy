@@ -61,6 +61,9 @@ const Button = styled.button`
 `;
 
 const Profile: React.FC = () => {
+  React.useEffect(() => {
+    document.title = "MagaluFy | Perfil";
+  }, []);
   const { user, loading, logout } = useAuth();
 
   if (loading) return <Loader />;

@@ -1,7 +1,12 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
 import styled from 'styled-components';
-import { useState } from 'react';
+import HomeIcon from '../assets/home';
+import ArtistsIcon from '../assets/artists';
+import PlaylistsIcon from '../assets/playlists';
+import ProfileIcon from '../assets/profile';
+import logoSpotify from '../assets/logo_spotify.png';
+import PwaIcon from '../assets/pwa';
 
 const SidebarContainer = styled.aside`
   position: fixed;
@@ -53,6 +58,11 @@ const Logo = styled.h1`
   letter-spacing: -2px;
 `;
 
+const LogoImg = styled.img`
+  width: 160px;
+  margin: 0 0 40px 32px;
+`;
+
 const Nav = styled.nav`
   display: flex;
   flex-direction: column;
@@ -78,11 +88,21 @@ const StyledLink = styled(NavLink)`
   }
 `;
 
-const InstallPWA = styled.div`
+const InstallPWALink = styled.a`
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  color: #fff;
+  text-decoration: none;
+  font-size: 1.1rem;
+  padding: 12px 32px;
+  font-family: inherit;
+  cursor: pointer;
   margin-top: auto;
-  padding: 24px 32px;
-  color: #888;
-  font-size: 0.95rem;
+  margin-bottom: 24px;
+  &:hover {
+    background: #222;
+  }
 `;
 
 const SidebarOverlay = styled.div<{ $open: boolean }>`
@@ -169,8 +189,43 @@ const HamburgerIcon = (props: React.SVGProps<SVGSVGElement>) => (
   </svg>
 );
 
+const getPwaIneligibilityReason = () => {
+  if (!('serviceWorker' in navigator)) return 'Seu navegador não suporta Service Worker.';
+  if (window.location.protocol !== 'https:' && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') return 'PWA só pode ser instalado em HTTPS ou localhost.';
+  if (window.matchMedia('(display-mode: standalone)').matches) return 'O app já está instalado.';
+  if (!window.matchMedia('(min-width: 320px)').matches) return 'A tela está muito pequena para instalar o PWA.';
+  return 'Seu navegador não disparou o evento de instalação. Tente atualizar a página ou usar outro navegador.';
+};
+
 const Sidebar: React.FC = () => {
   const [open, setOpen] = useState(false);
+  const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
+  const [showReason, setShowReason] = useState(false);
+  const [reason, setReason] = useState('');
+
+  useEffect(() => {
+    const handler = (e: any) => {
+      e.preventDefault();
+      setDeferredPrompt(e);
+    };
+    window.addEventListener('beforeinstallprompt', handler);
+    return () => window.removeEventListener('beforeinstallprompt', handler);
+  }, []);
+
+  const handleInstallPWA = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      if (outcome === 'accepted') {
+        setDeferredPrompt(null);
+      }
+    } else {
+      setReason(getPwaIneligibilityReason());
+      setShowReason(true);
+    }
+  };
+
   // Fecha menu mobile ao clicar fora
   React.useEffect(() => {
     if (!open) return;
@@ -192,21 +247,53 @@ const Sidebar: React.FC = () => {
       </MobileHeader>
      
       <SidebarContainer>
-        <Logo>Spotify</Logo>
+        <LogoImg src={logoSpotify} alt="Spotify Logo" />
         <Nav>
-          <StyledLink to="/">Home</StyledLink>
-          <StyledLink to="/artists">Artistas</StyledLink>
-          <StyledLink to="/playlists">Playlists</StyledLink>
-          <StyledLink to="/profile">Perfil</StyledLink>
+          <StyledLink to="/">
+            <HomeIcon style={{ marginRight: 16, verticalAlign: 'middle' }} /> Home
+          </StyledLink>
+          <StyledLink to="/artists">
+            <ArtistsIcon style={{ marginRight: 16, verticalAlign: 'middle' }} /> Artistas
+          </StyledLink>
+          <StyledLink to="/playlists">
+            <PlaylistsIcon style={{ marginRight: 16, verticalAlign: 'middle' }} /> Playlists
+          </StyledLink>
+          <StyledLink to="/profile">
+            <ProfileIcon style={{ marginRight: 16, verticalAlign: 'middle' }} /> Perfil
+          </StyledLink>
         </Nav>
-        <InstallPWA>Instalar PWA</InstallPWA>
+        <InstallPWALink href="#" onClick={handleInstallPWA}>
+          <PwaIcon style={{ marginRight: 16, verticalAlign: 'middle' }} /> Instalar PWA
+        </InstallPWALink>
+        {showReason && (
+          <div style={{ color: '#fff', background: '#222', padding: 16, borderRadius: 8, margin: '16px 32px' }}>
+            {reason}
+            <button style={{ marginLeft: 16 }} onClick={() => setShowReason(false)}>Fechar</button>
+          </div>
+        )}
       </SidebarContainer>
       <MobileMenu $open={open} id="mobile-menu">
-        <StyledLink to="/" onClick={() => setOpen(false)}>Home</StyledLink>
-        <StyledLink to="/artists" onClick={() => setOpen(false)}>Artistas</StyledLink>
-        <StyledLink to="/playlists" onClick={() => setOpen(false)}>Playlists</StyledLink>
-        <StyledLink to="/profile" onClick={() => setOpen(false)}>Perfil</StyledLink>
-        <InstallPWA>Instalar PWA</InstallPWA>
+        <StyledLink to="/" onClick={() => setOpen(false)}>
+          <HomeIcon style={{ marginRight: 16, verticalAlign: 'middle' }} /> Home
+        </StyledLink>
+        <StyledLink to="/artists" onClick={() => setOpen(false)}>
+          <ArtistsIcon style={{ marginRight: 16, verticalAlign: 'middle' }} /> Artistas
+        </StyledLink>
+        <StyledLink to="/playlists" onClick={() => setOpen(false)}>
+          <PlaylistsIcon style={{ marginRight: 16, verticalAlign: 'middle' }} /> Playlists
+        </StyledLink>
+        <StyledLink to="/profile" onClick={() => setOpen(false)}>
+          <ProfileIcon style={{ marginRight: 16, verticalAlign: 'middle' }} /> Perfil
+        </StyledLink>
+        <InstallPWALink href="#" onClick={handleInstallPWA} style={{ margin: 0 }}>
+          <PwaIcon style={{ marginRight: 16, verticalAlign: 'middle' }} /> Instalar PWA
+        </InstallPWALink>
+        {showReason && (
+          <div style={{ color: '#fff', background: '#222', padding: 16, borderRadius: 8, margin: '16px 0' }}>
+            {reason}
+            <button style={{ marginLeft: 16 }} onClick={() => setShowReason(false)}>Fechar</button>
+          </div>
+        )}
       </MobileMenu>
     </>
   );

@@ -106,6 +106,9 @@ interface Artist {
 const LIMIT = 8;
 
 const Artists: React.FC = () => {
+  React.useEffect(() => {
+    document.title = "MagaluFy | Artistas";
+  }, []);
   const { user, loading } = useAuth();
   const [artists, setArtists] = useState<Artist[]>([]);
   const [offset, setOffset] = useState(0);

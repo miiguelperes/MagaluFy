@@ -37,6 +37,9 @@ const Button = styled.button`
 `;
 
 const Home: React.FC = () => {
+  React.useEffect(() => {
+    document.title = "MagaluFy | Home";
+  }, []);
   const { user, loading, login } = useAuth();
 
   if (loading) return <Container>Carregando...</Container>;

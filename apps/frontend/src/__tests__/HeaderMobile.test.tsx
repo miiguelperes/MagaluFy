@@ -16,8 +16,8 @@ describe('HeaderMobile', () => {
         </BrowserRouter>
       </ThemeProvider>
     );
-    // Deve haver pelo menos dois elementos com o texto Spotify (logo mobile e logo sidebar)
-    expect(screen.getAllByText('Spotify').length).toBeGreaterThanOrEqual(2);
+    // Deve haver pelo menos um elemento com o texto Spotify (logo mobile)
+    expect(screen.getAllByText('Spotify').length).toBeGreaterThanOrEqual(1);
     expect(screen.getByLabelText(/abrir menu/i)).toBeInTheDocument();
   });
 }); 

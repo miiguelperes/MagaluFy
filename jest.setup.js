@@ -5,6 +5,7 @@ if (typeof global.setImmediate === 'undefined') {
 }
 if (typeof global.IntersectionObserver === 'undefined') {
   global.IntersectionObserver = class {
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
     constructor() {}
     // eslint-disable-next-line @typescript-eslint/no-empty-function
     observe() {}

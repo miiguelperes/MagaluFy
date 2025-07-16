@@ -1,6 +1,8 @@
 {
   "short_name": "MagaluFy",
   "name": "MagaluFy Spotify UI",
+  "author": "Miguel Peres",
+  "description": "MagaluFy - UI inspirada no Spotify, desenvolvida por Miguel Peres.",
   "icons": [
     {
       "src": "favicon.ico",
